@@ -1,12 +1,15 @@
 
 
 
-function VideogameCard () {
+function VideogameCard (props) {
 
 
     return (
         <div>
-            <p>Videogame Cards</p>
+            <p>{props.id}</p>
+            <p>{props.name}</p>
+            <p>{props.rating}</p>
+            <p>{props.released}</p>
         </div>
     )
 }

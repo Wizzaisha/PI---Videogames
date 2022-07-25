@@ -134,9 +134,12 @@ router.post("/", async (req, res, next) => {
             INDEX++;
 
             // Funcion para crear o encontrar un genero o plataforma!
-            const findOrCreateItem = async(name, model) => {
-                const data = await model.findOrCreate({where: {name: name}});
-                return data[0];
+            const findOrCreateItem = async(data, model) => {
+                const response = await model.findOrCreate({
+                    where: {
+                        name: data.name
+                    }});
+                return response[0];
             }
 
             // Promesas para agregar plataformas y generos!

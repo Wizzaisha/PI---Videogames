@@ -6,11 +6,11 @@ import {
 } from "react-router-dom";
 
 // Import routes
-import LandingPage from "./components/Landing page/landingPage.jsx";
-import Home from "./components/Home/home.jsx";
-import CreateVideogame from "./components/Create Videogame/createVideogame.jsx";
-import DetailsVideogame from "./components/Details Videogame/detailsVideogame.jsx";
-import VideogameCards from "./components/Videogames Cards/videogameCards.jsx";
+import LandingPage from "./components/Landing page/LandingPage.jsx";
+import NavBarHeader from "./components/NavBarHeader/NavBarHeader.jsx";
+import CreateVideogame from "./components/Create Videogame/CreateVideogame.jsx";
+import DetailsVideogame from "./components/Details Videogame/DetailsVideogame.jsx";
+import VideogameCards from "./components/Videogames Cards/VideogameCards.jsx";
 
 
 
@@ -19,9 +19,9 @@ function App() {
     <div className="App">
       <Routes>
         <Route path='/' element={<LandingPage />}></Route>
-        <Route path='/videogames' element={<Home />}>
+        <Route path='/videogames' element={<NavBarHeader />}>
           <Route index element={<VideogameCards />}></Route>
-          <Route path='idVideogame' element={<DetailsVideogame />}></Route>
+          <Route path=':idVideogame' element={<DetailsVideogame />}></Route>
           <Route path='create' element={<CreateVideogame />}></Route>
         </Route>
         <Route path='*' element=

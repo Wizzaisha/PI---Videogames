@@ -7,6 +7,7 @@ const morgan = require('morgan');
 const videogames = require("./routes/videogames.route.js");
 const genres = require("./routes/genres.route.js");
 const home = require("./routes/home.route.js");
+const platforms = require("./routes/platforms.route.js");
 
 require('./db.js');
 
@@ -31,6 +32,7 @@ server.use((req, res, next) => {
 server.use("/", home);
 server.use("/videogames", videogames);
 server.use("/genres", genres);
+server.use("/platforms", platforms);
 
 
 
