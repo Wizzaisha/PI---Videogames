@@ -9,9 +9,9 @@ export const GET_ALL_PLATFORMS = "GET_ALL_PLATFORMS";
 
 
 // Actions functions
-export const getAllVideogames = (typeReq) => {
+export const getAllVideogames = () => {
     return async (dispatch) => {
-        const response = await axios.get("http://localhost:3001/videogames", {params: {typeReq: typeReq}});
+        const response = await axios.get("http://localhost:3001/videogames");
         return dispatch({type: GET_ALL_VIDEOGAMES, payload: response.data});
     }
 };

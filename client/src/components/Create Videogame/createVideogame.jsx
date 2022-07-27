@@ -9,7 +9,8 @@ function CreateVideogame () {
     const [input, setInput] = useState({
         name: "",
         description: "",
-        genres: []
+        genres: [],
+        platforms: []
     });
 
     // State de errores
@@ -29,9 +30,14 @@ function CreateVideogame () {
         platform: false
     });
 
+
+    // State para deshabilidad o habilitar el botton de enviar
+    const [toggleButton, setToggleButton] = useState(true);
+
     // Use dispatch y use selectors
     const allGenres = useSelector(state => state.allGenres);
     const allPlatforms = useSelector(state => state.allPlatforms);
+    // const createVgResponse = useSelector(state => state.createVideogameResponse);
     const dispatch = useDispatch();
 
     // Use effect para obtener todos los genres y platforms del back
@@ -44,27 +50,26 @@ function CreateVideogame () {
         }
 
         return () => mounted = false;
-    }, []);
+    }, [dispatch]);
 
 
     // Manejo de algunos errores comunes
     const handleRequireError = (value, name) => {
-        if (value.length === 0) return setError({
+        if (value.length === 0) {
+            setError({
             ...error,
-            [name]: "This field must be filled!"
-        });
-        else return setError({
+            [name]: "This field must be filled!" });
+            setToggleButton(true);
+        } else {
+            setError({
             ...error,
-            [name]: ""
-        });
+            [name]: "" });
+            setToggleButton(false);
+        };
     };
 
-    // Manjeo de los cambios en el formulario
-
-    function handleChange(event){
-
-        const { name, value } = event.target;
-
+    // Function para el manejo de errores del input
+    const handleInputErrors = (name, value) => {
         switch(name) {
             case "name":
                 handleRequireError(value, name);
@@ -76,46 +81,76 @@ function CreateVideogame () {
                 handleRequireError(value, name);
                 break;
             case "rating":
-                if (value < 0 || value > 5) setError({
+                if (value < 0 || value > 5) { 
+                    setError({
                     ...error,
-                    [name]: "The value must be between 0.0 and 5.0"
-                });
+                        [name]: "The value must be between 0.0 and 5.0"
+                        });
+                    setToggleButton(true);
+                } 
                 // Con esta cosa (regular expression) se puede analizar si un numero tiene 2 decimales!
-                else if (!/^\d*(\.\d{0,2})?$/.test(value)) setError({
-                    [name]: "The value must have 2 decimal places or less"
-                });
-                else if (value.length === 0) handleRequireError(value, name);
-                else setError({
-                    ...error,
-                    [name]: ""
-                });
-                
+                else if (!/^\d*(\.\d{0,2})?$/.test(value)) {
+                    setError({
+                        [name]: "The value must have 2 decimal places or less"
+                        });
+                    setToggleButton(true);
+                }
+                else if (value.length === 0) {
+                    handleRequireError(value, name);
+                    setToggleButton(true);
+                } else {
+                    setError({
+                        ...error,
+                        [name]: ""
+                    });
+                    setToggleButton(false);
+                };
                 break;
             case "background_image":
-                const urlRegExp = new RegExp("^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_\+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?");
-                if (value.length === 0) handleRequireError(value, name); 
-                else if (!urlRegExp.test(value)) setError({
-                    ...error,
-                    [name]: "This field must be a valid URL link"
-                });
-                else setError({
-                    ...error,
-                    [name]: ""
-                }); 
+                const urlRegExp = new RegExp("^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?");
+                if (value.length === 0) {
+                    handleRequireError(value, name);
+                    setToggleButton(true);
+                } else if (!urlRegExp.test(value)) {setError({
+                        ...error,
+                        [name]: "This field must be a valid URL link"
+                    });
+                    setToggleButton(true);
+                } else { 
+                    setError({
+                        ...error,
+                        [name]: ""
+                    });
+                    setToggleButton(false);
+                }; 
                 break;
             case "playtime":
-                if (!/^\d*(\.\d{0})?$/.test(value)) setError({
-                    ...error,
-                    [name]: "This field allows only round numbers"
-                });
-                else setError({
-                    ...error,
-                    [name]: ""
-                });
+                if (!/^\d*(\.\d{0})?$/.test(value)) {
+                    setError({
+                        ...error,
+                        [name]: "This field allows only round numbers"
+                    });
+                    setToggleButton(true);
+                } else {
+                    setError({
+                        ...error,
+                        [name]: ""
+                    });
+                    setToggleButton(false);
+                };
                 break;
             default:
                 return "That prop does not exist.";
         }
+    }
+
+    // Manjeo de los cambios en el formulario
+
+    function handleChange(event){
+
+        const { name, value } = event.target;
+
+        handleInputErrors(name, value);
 
         setInput({
             ...input,
@@ -123,31 +158,30 @@ function CreateVideogame () {
         });
     };
 
+    // Genre change
     function handleGenre(event) {
         const value = event.target.value;
         const findExistGenre = genres.find(element => element.name === value);
         
-
         if (findExistGenre) {
             setError({
                 ...error,
-                genres: "That genre already exist!, please select other." 
+                genres: "The genre already exist!, please select other." 
             });
+            setToggleButton(true);
         } else {
+            setError({
+                ...error,
+                genres: "" 
+            });
             setGenreText(value);
-        
-        
-            setGenres([...genres, {
-                    name: value,
-            }]);
+            setToggleButton(false);
+            setGenres([...genres, {name: value}]);
         }
 
     };
 
-    function onFocusClear() {
-        setGenreText("");
-    }
-
+    // Genre button
     function handleGenreButton(event){
         
         setInput({
@@ -163,11 +197,67 @@ function CreateVideogame () {
         event.preventDefault();
     };
 
-    function handleClick(event){
+    // Platform change
+    function handlePlatform(event) {
+        const value = event.target.value;
+        const findExistPlatform = platforms.find(element => element.name === value);
         
-        console.log(input);
+        if (findExistPlatform) {
+            setError({
+                ...error,
+                platforms: "The platform already exist!, please select other one." 
+            });
+            setToggleButton(true);
+        } else {
+            setError({
+                ...error,
+                platforms: "" 
+            });
+            setPlatformText(value);
+            setToggleButton(false);
+            setPlatforms([...platforms, {name: value}]);
+        }
+        
+    }
 
-        // dispatch(createVideogame(input));
+    // Platform button
+    function hanldePlatformsButton(event) {
+        setInput({
+            ...input,
+            platforms
+        });
+        setShowSpan({
+            ...showSpan,
+            platform: true
+        });
+
+        event.preventDefault();
+    };
+
+    // Clear genre and platform input
+    function onFocusClear() {
+        setGenreText("");
+        setPlatformText("");
+    };
+
+    function handleClick(event){
+        dispatch(createVideogame(input));
+
+        setInput({
+            name: "",
+            description: "",
+            genres: [],
+            platforms: []
+        });
+
+        setShowSpan({
+            genre: false,
+            platform: false
+        });
+
+        setGenres([]);
+        setPlatforms([]);
+        
         
         event.preventDefault();
     };
@@ -289,14 +379,31 @@ function CreateVideogame () {
                 <label>Platforms:</label>
                 <br />
                 <input 
-                    name="platforms" 
-                    value={input.platforms} 
-                    onChange={handleChange}
+                    name="platforms"
+                    list="searchPlatforms" 
+                    value={platformText} 
+                    onChange={handlePlatform}
+                    onFocus={onFocusClear}
+                    placeholder={"Select an option"}
                 ></input>
+                <datalist id="searchPlatforms">
+                    {allPlatforms && allPlatforms.map(platform => {
+                        return <option key={platform.id}>{platform.name}</option>
+                    })}
+                </datalist>
+                <button onClick={hanldePlatformsButton}><span>Add</span></button>
                 <br />
+                {error.platforms ? <span>{error.platforms}</span> : null}
+                {showSpan.platform ? <h3>Platforms added: </h3> : null}
+                {showSpan.platform && input.platforms ? input.platforms.map((platform, index) => {
+                    return (
+                        <span key={index}>{platform.name}</span>
+                    )
+                }) : null}
                 <br />
+
+                <button onClick={handleClick} disabled={toggleButton ? true : ""}><span>Send</span></button>
                 
-                <button onClick={handleClick} disabled={error ? "true" : ""}><span>Enviar</span></button>
             </form>
         </div>
     )

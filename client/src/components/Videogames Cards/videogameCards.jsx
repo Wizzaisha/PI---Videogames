@@ -12,7 +12,7 @@ function VideogameCards () {
     useEffect(() => {
         let mounted = true;
         if (mounted) {
-            dispatch(getAllVideogames("database"));
+            dispatch(getAllVideogames());
         }
         return () => mounted = false;
 

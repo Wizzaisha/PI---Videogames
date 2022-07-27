@@ -1,4 +1,4 @@
-
+const { Link } = require("react-router-dom");
 
 
 function LandingPage () {
@@ -7,6 +7,7 @@ function LandingPage () {
     return (
         <div>
             <p>Landing Page</p>
+            <Link to={"/videogames"}><button>To main page</button></Link>
         </div>
     )
 }

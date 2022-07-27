@@ -1,3 +1,4 @@
+
 exports.dataApiController = (dataArray) => {
     return dataArray.map(element => {
         return {

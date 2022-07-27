@@ -32,6 +32,9 @@ module.exports = (sequelize) => {
     },
     playtime: {
       type: DataTypes.INTEGER,
+    },
+    originDatbase: {
+      type: DataTypes.BOOLEAN
     }
 
   }, {

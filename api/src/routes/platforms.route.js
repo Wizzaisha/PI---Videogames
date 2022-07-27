@@ -31,7 +31,7 @@ router.get("/", async (req, res, next) => {
             // Filtrando platforms desde la ruta /games
             const response = await axios.get(`https://api.rawg.io/api/games?key=${API_KEY}`);
             // Corta los primeros 100 datos y los mapea a plataformas
-            const gamesData = response.data["results"].slice(0, 100).map(game => game.platforms);
+            const gamesData = response.data["results"].map(game => game.platforms);
             // Extrae los nombres de las diferentes plataformas 
             gamesData.forEach(platforms => {
                 platforms.forEach(e => platFormsData.push(e.platform));
