@@ -1,4 +1,4 @@
-
+import { Link } from "react-router-dom";
 
 
 function VideogameCard (props) {
@@ -6,8 +6,7 @@ function VideogameCard (props) {
 
     return (
         <div>
-            <p>{props.id}</p>
-            <p>{props.name}</p>
+            <Link to={`/videogames/${props.id}`}><p>{props.name}</p></Link>
             <p>{props.rating}</p>
             <p>{props.released}</p>
         </div>

@@ -57,13 +57,13 @@ function CreateVideogame () {
     const handleRequireError = (value, name) => {
         if (value.length === 0) {
             setError({
-            ...error,
-            [name]: "This field must be filled!" });
+                ...error,
+                [name]: "This field must be filled!" });
             setToggleButton(true);
         } else {
             setError({
-            ...error,
-            [name]: "" });
+                ...error,
+                [name]: "" });
             setToggleButton(false);
         };
     };
@@ -83,7 +83,7 @@ function CreateVideogame () {
             case "rating":
                 if (value < 0 || value > 5) { 
                     setError({
-                    ...error,
+                        ...error,
                         [name]: "The value must be between 0.0 and 5.0"
                         });
                     setToggleButton(true);
@@ -91,6 +91,7 @@ function CreateVideogame () {
                 // Con esta cosa (regular expression) se puede analizar si un numero tiene 2 decimales!
                 else if (!/^\d*(\.\d{0,2})?$/.test(value)) {
                     setError({
+                        ...error,
                         [name]: "The value must have 2 decimal places or less"
                         });
                     setToggleButton(true);

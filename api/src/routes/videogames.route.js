@@ -80,17 +80,10 @@ router.get("/", async (req, res, next) => {
 
                 while (dataMax > 0){
                     
-                    if(dataMax > page_size_max){
-                        numberCalls.push({
-                            page_size: page_size_max,
-                            page: page++
-                        });
-                    } else {
-                        numberCalls.push({
-                            page_size: dataMax,
-                            page: page++
-                        });
-                    }
+                    numberCalls.push({
+                        page_size: page_size_max,
+                        page: page++
+                    });
                     
                     dataMax -= page_size_max;
                 };
@@ -115,7 +108,7 @@ router.get("/", async (req, res, next) => {
                 });
 
                 // Eliminacion de los array anidados para juntar los datos
-                const dataFromApi = dataFormated.flat();
+                const dataFromApi = dataFormated.flat().slice(0, max - dataFromDb.length);
                 
                 // Juntar la data de la db con la api
                 const dataDbApi = [...dataFromApi, ...dataFromDb];

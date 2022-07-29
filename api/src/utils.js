@@ -8,7 +8,9 @@ exports.dataApiController = (dataArray) => {
             rating: element["rating"],
             background_image: element["background_image"],
             playtime: element["playtime"],
-            platforms: element["platforms"],
+            platforms: element["platforms"].map(element => { 
+                return element.platform;
+            }),
             genres: element["genres"]
         }
     });

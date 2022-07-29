@@ -6,12 +6,15 @@ export const GET_VIDEOGAME_DETAIL = "GET_VIDEOGAME_DETAIL";
 export const CREATE_VIDEOGAME = "CREATE_VIDEOGAME";
 export const GET_ALL_GENRES = "GET_ALL_GENRES";
 export const GET_ALL_PLATFORMS = "GET_ALL_PLATFORMS";
-
+export const FILTER_BY_GENRE = "FILTER_BY_GENRE";
+export const FILTER_BY_PLATFORM = "FILTER_BY_PLATFORM";
+export const FILTER_BY_ORIGIN = "FILTER_BY_ORIGIN";
+export const SORT_BY = "SORT_BY";
 
 // Actions functions
-export const getAllVideogames = () => {
+export const getAllVideogames = (name) => {
     return async (dispatch) => {
-        const response = await axios.get("http://localhost:3001/videogames");
+        const response = await axios.get("http://localhost:3001/videogames", {params: {name: name}});
         return dispatch({type: GET_ALL_VIDEOGAMES, payload: response.data});
     }
 };
@@ -42,5 +45,30 @@ export const getAllPlatforms = () => {
     return async (dispatch) => {
         const response = await axios.get("http://localhost:3001/platforms");
         return dispatch({type: GET_ALL_PLATFORMS, payload: response.data});
+    }
+}
+
+
+export const filterByGenre = (genre) => {
+    return (dispatch) => {
+        return dispatch({type: FILTER_BY_GENRE, payload: genre});
+    }
+}
+
+export const filterByPlatform = (platform) => {
+    return (dispatch) => {
+        return dispatch({type: FILTER_BY_PLATFORM, payload: platform});
+    }
+}
+
+export const filterByOrigin = (origin) => {
+    return (dispatch) => {
+        return dispatch({type: FILTER_BY_ORIGIN, payload: origin});
+    }
+}
+
+export const sortBy = (type) => {
+    return (dispatch) => {
+        return dispatch({type: SORT_BY, payload: type});
     }
 }
