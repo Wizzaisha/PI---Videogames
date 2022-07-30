@@ -9,6 +9,10 @@ function CreateVideogame () {
     const [input, setInput] = useState({
         name: "",
         description: "",
+        released: "",
+        rating: "",
+        background_image: "",
+        playtime: "",
         genres: [],
         platforms: []
     });
@@ -16,24 +20,14 @@ function CreateVideogame () {
     // State de errores
     const [error, setError] = useState({});
 
-    // State para el manejo de genres
-    const [genreText, setGenreText] = useState("");
-    const [genres, setGenres] = useState([]);
+    // State checked otra plataforma
+    const [checkedOther, setCheckedOther] = useState(false);
 
-    // State para el manejo de platforms
-    const [platformText, setPlatformText] = useState("");
-    const [platforms, setPlatforms] = useState([]);
-
-    // Show span (ver genres y platforms activos)
-    const [showSpan, setShowSpan] = useState({
-        genre: false,
-        platform: false
+    // Estado para añadir otros valores
+    const [otherPlatform, setOtherPlatform] = useState({
+        name: ""
     });
-
-
-    // State para deshabilidad o habilitar el botton de enviar
-    const [toggleButton, setToggleButton] = useState(true);
-
+    
     // Use dispatch y use selectors
     const allGenres = useSelector(state => state.allGenres);
     const allPlatforms = useSelector(state => state.allPlatforms);
@@ -43,13 +37,10 @@ function CreateVideogame () {
     // Use effect para obtener todos los genres y platforms del back
 
     useEffect(() => {
-        let mounted = true;
-        if (mounted){
-            dispatch(getAllGenres());
-            dispatch(getAllPlatforms());
-        }
 
-        return () => mounted = false;
+        dispatch(getAllGenres());
+        dispatch(getAllPlatforms());
+        
     }, [dispatch]);
 
 
@@ -59,12 +50,15 @@ function CreateVideogame () {
             setError({
                 ...error,
                 [name]: "This field must be filled!" });
-            setToggleButton(true);
+            
         } else {
-            setError({
-                ...error,
-                [name]: "" });
-            setToggleButton(false);
+            setError(prevVal => {
+                const copy = {...prevVal};
+
+                delete prevVal[name];
+
+                return copy;
+            });
         };
     };
 
@@ -86,7 +80,6 @@ function CreateVideogame () {
                         ...error,
                         [name]: "The value must be between 0.0 and 5.0"
                         });
-                    setToggleButton(true);
                 } 
                 // Con esta cosa (regular expression) se puede analizar si un numero tiene 2 decimales!
                 else if (!/^\d*(\.\d{0,2})?$/.test(value)) {
@@ -94,35 +87,40 @@ function CreateVideogame () {
                         ...error,
                         [name]: "The value must have 2 decimal places or less"
                         });
-                    setToggleButton(true);
+                    
                 }
                 else if (value.length === 0) {
                     handleRequireError(value, name);
-                    setToggleButton(true);
+                    
                 } else {
-                    setError({
-                        ...error,
-                        [name]: ""
+                    setError(prevVal => {
+                        const copy = {...prevVal};
+        
+                        delete prevVal[name];
+        
+                        return copy;
                     });
-                    setToggleButton(false);
+                    
                 };
                 break;
             case "background_image":
                 const urlRegExp = new RegExp("^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?");
                 if (value.length === 0) {
                     handleRequireError(value, name);
-                    setToggleButton(true);
+                    
                 } else if (!urlRegExp.test(value)) {setError({
                         ...error,
                         [name]: "This field must be a valid URL link"
                     });
-                    setToggleButton(true);
+                    
                 } else { 
-                    setError({
-                        ...error,
-                        [name]: ""
+                    setError(prevVal => {
+                        const copy = {...prevVal};
+        
+                        delete prevVal[name];
+        
+                        return copy;
                     });
-                    setToggleButton(false);
                 }; 
                 break;
             case "playtime":
@@ -131,13 +129,15 @@ function CreateVideogame () {
                         ...error,
                         [name]: "This field allows only round numbers"
                     });
-                    setToggleButton(true);
+                    
                 } else {
-                    setError({
-                        ...error,
-                        [name]: ""
+                    setError(prevVal => {
+                        const copy = {...prevVal};
+        
+                        delete prevVal[name];
+        
+                        return copy;
                     });
-                    setToggleButton(false);
                 };
                 break;
             default:
@@ -160,106 +160,98 @@ function CreateVideogame () {
     };
 
     // Genre change
-    function handleGenre(event) {
-        const value = event.target.value;
-        const findExistGenre = genres.find(element => element.name === value);
+    function handleChangeGenre(event) {
         
-        if (findExistGenre) {
-            setError({
-                ...error,
-                genres: "The genre already exist!, please select other." 
-            });
-            setToggleButton(true);
+        const { value, checked } = event.target;
+        
+        // Primero se llama el valor iniciarl del input (en este caso genres arr vacio)
+        const { genres } = input;
+
+        if (checked) {
+            setInput({
+                ...input,
+                genres: [...genres, {name: value}]
+            })
         } else {
-            setError({
-                ...error,
-                genres: "" 
-            });
-            setGenreText(value);
-            setToggleButton(false);
-            setGenres([...genres, {name: value}]);
+            setInput({
+                ...input,
+                genres: genres.filter(genre => genre.name !== value)
+            })
         }
-
-    };
-
-    // Genre button
-    function handleGenreButton(event){
         
-        setInput({
-            ...input,
-            genres
-        });
-
-        setShowSpan({
-            ...showSpan,
-            genre: true
-        });
-
-        event.preventDefault();
     };
 
     // Platform change
-    function handlePlatform(event) {
-        const value = event.target.value;
-        const findExistPlatform = platforms.find(element => element.name === value);
-        
-        if (findExistPlatform) {
-            setError({
-                ...error,
-                platforms: "The platform already exist!, please select other one." 
+    function handleChangePlatform(event) {
+        const { value, checked } = event.target;
+
+        const { platforms } = input;
+
+        if (checked) {
+            setInput({
+                ...input,
+                platforms: [...platforms, {name: value}]
             });
-            setToggleButton(true);
         } else {
-            setError({
-                ...error,
-                platforms: "" 
-            });
-            setPlatformText(value);
-            setToggleButton(false);
-            setPlatforms([...platforms, {name: value}]);
+            setInput({
+                ...input,
+                platforms: platforms.filter(platform => platform.name !== value)
+            })
         }
         
     }
 
-    // Platform button
-    function hanldePlatformsButton(event) {
+    // Other input change
+    function activateOther(){
+
+        setCheckedOther(!checkedOther);
+        
+    }
+
+    function handleOtherValue(event) {
+        const { value } = event.target;
+
+        handleInputErrors("otherPlatform", value);
+
+        setOtherPlatform({name: value});
+
+    }
+
+    function handleOtherPlatformClick(event) {
+
+        const { platforms } = input;
+
         setInput({
             ...input,
-            platforms
+            platforms: [...platforms, otherPlatform]
         });
-        setShowSpan({
-            ...showSpan,
-            platform: true
+
+        setOtherPlatform({
+            name: ""
         });
+        
 
         event.preventDefault();
-    };
+    }
 
-    // Clear genre and platform input
-    function onFocusClear() {
-        setGenreText("");
-        setPlatformText("");
-    };
 
     function handleClick(event){
+        
         dispatch(createVideogame(input));
 
         setInput({
             name: "",
             description: "",
+            released: "",
+            rating: "",
+            background_image: "",
+            playtime: "",
             genres: [],
             platforms: []
         });
 
-        setShowSpan({
-            genre: false,
-            platform: false
-        });
+        setCheckedOther(false);
 
-        setGenres([]);
-        setPlatforms([]);
-        
-        
         event.preventDefault();
     };
     
@@ -302,7 +294,8 @@ function CreateVideogame () {
                 <br />
                 <input 
                     name="released"
-                    type={"date"}  
+                    type={"date"}
+                    value={input.released}  
                     onChange={handleChange}
                 ></input>
                 {error.released ? <span>{error.released}</span> : null}
@@ -314,7 +307,8 @@ function CreateVideogame () {
                 <br />
                 <input 
                     name="rating"
-                    type={"number"} 
+                    type={"number"}
+                    value={input.rating} 
                     placeholder={"0.0 - 5.0"} 
                     onChange={handleChange}
                 ></input>
@@ -329,6 +323,7 @@ function CreateVideogame () {
                 <input 
                     name="background_image"
                     type={"url"}
+                    value={input.background_image}
                     placeholder={"https://example.com"} 
                     onChange={handleChange}
                 ></input>
@@ -343,6 +338,7 @@ function CreateVideogame () {
                 <input 
                     name="playtime"
                     type={"number"}
+                    value={input.playtime}
                     placeholder={"Hours of playtime"}
                     onChange={handleChange}
                 ></input>
@@ -354,56 +350,59 @@ function CreateVideogame () {
                 {/* Genres array selection*/}
                 <label>Genres:</label>
                 <br />
-                <input 
-                    list="searchGenre"
-                    type={"input"}
-                    value={genreText} 
-                    onChange={handleGenre}
-                    onFocus={onFocusClear}
-                    placeholder={"Select an option"}
-                ></input>
-                <datalist id="searchGenre">
-                    {allGenres && allGenres.map(genre => <option key={genre.id}>{genre.name}</option>)}
-                </datalist>
-                <button onClick={handleGenreButton}><span>Add</span></button>
+                {input.genres.length === 0 ? <span>You must select at least 1 genre</span> : null}
                 <br />
-                {error.genres ? <span>{error.genres}</span> : null}
-                {showSpan.genre ? <h3>Genres added: </h3> : null}
-                {showSpan.genre && input.genres ? input.genres.map((genre, index) => {
+                {allGenres && allGenres.slice(1).map(genre => {
                     return (
-                        <span key={index}>{genre.name}</span>
+                        <div key={genre.id}>
+                            <label>{genre.name}</label>
+                            <input 
+                                type={"checkbox"}
+                                onChange={handleChangeGenre}
+                                value={genre.name} 
+                                name={genre.name}   
+                            ></input>
+                        </div>
                     )
-                }) : null}
-                <br />
+                })}
                 
+                <br />
+
+
+
                 {/* Platforms array selection*/}
                 <label>Platforms:</label>
                 <br />
-                <input 
-                    name="platforms"
-                    list="searchPlatforms" 
-                    value={platformText} 
-                    onChange={handlePlatform}
-                    onFocus={onFocusClear}
-                    placeholder={"Select an option"}
-                ></input>
-                <datalist id="searchPlatforms">
-                    {allPlatforms && allPlatforms.map(platform => {
-                        return <option key={platform.id}>{platform.name}</option>
-                    })}
-                </datalist>
-                <button onClick={hanldePlatformsButton}><span>Add</span></button>
-                <br />
-                {error.platforms ? <span>{error.platforms}</span> : null}
-                {showSpan.platform ? <h3>Platforms added: </h3> : null}
-                {showSpan.platform && input.platforms ? input.platforms.map((platform, index) => {
+                {allPlatforms && allPlatforms.slice(1).map(platform => {
                     return (
-                        <span key={index}>{platform.name}</span>
+                        <div key={platform.id}>
+                            <label>{platform.name}</label>
+                            <input 
+                                type={"checkbox"}
+                                onChange={handleChangePlatform}
+                                value={platform.name}
+                                name={platform.name}    
+                            ></input>
+                        </div>
                     )
-                }) : null}
+                })}
                 <br />
+                <label>¿Add other type of platform?</label>
+                <input type={"checkbox"} checked={checkedOther} name={"other"} onChange={activateOther}></input>
+                <br />
+                <input 
+                    disabled={checkedOther ? null : true} 
+                    value={otherPlatform.name} 
+                    onChange={handleOtherValue}
+                    placeholder="Add other platform"
+                ></input>
+                <br />
+                
+                <button onClick={handleOtherPlatformClick}>Add</button>
 
-                <button onClick={handleClick} disabled={toggleButton ? true : ""}><span>Send</span></button>
+                <br />
+                <br />
+                <button onClick={handleClick} disabled={Object.entries(error).length === 0 && input.platforms.length > 0 && input.genres.length > 0 ? null : true}><span>Send</span></button>
                 
             </form>
         </div>

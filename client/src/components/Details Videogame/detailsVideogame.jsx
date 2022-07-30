@@ -19,7 +19,7 @@ function DetailsVideogame () {
             <p>Details Videogame</p>
             {videogame && <div>
                 <p>{videogame.name}</p>
-                <p>{videogame.description}</p>
+                {videogame.description && <p>{videogame.description.replace(/<\/?[^>]+(>|$)/g, "")}</p>}
                 <img src={videogame.background_image} alt={"img"}></img>
             </div>}
         </div>
