@@ -6,8 +6,7 @@ export const GET_VIDEOGAME_DETAIL = "GET_VIDEOGAME_DETAIL";
 export const CREATE_VIDEOGAME = "CREATE_VIDEOGAME";
 export const GET_ALL_GENRES = "GET_ALL_GENRES";
 export const GET_ALL_PLATFORMS = "GET_ALL_PLATFORMS";
-export const FILTER_BY_GENRE = "FILTER_BY_GENRE";
-export const FILTER_BY_PLATFORM = "FILTER_BY_PLATFORM";
+export const FILTER_BY = "FILTER_BY";
 export const FILTER_BY_ORIGIN = "FILTER_BY_ORIGIN";
 export const SORT_BY = "SORT_BY";
 
@@ -49,15 +48,9 @@ export const getAllPlatforms = () => {
 }
 
 
-export const filterByGenre = (genre) => {
+export const filterBy = (filterValues) => {
     return (dispatch) => {
-        return dispatch({type: FILTER_BY_GENRE, payload: genre});
-    }
-}
-
-export const filterByPlatform = (platform) => {
-    return (dispatch) => {
-        return dispatch({type: FILTER_BY_PLATFORM, payload: platform});
+        return dispatch({type: FILTER_BY, payload: {filterValues}});
     }
 }
 

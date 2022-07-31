@@ -5,8 +5,7 @@ import {
     CREATE_VIDEOGAME, 
     GET_ALL_GENRES, 
     GET_ALL_PLATFORMS, 
-    FILTER_BY_GENRE,
-    FILTER_BY_PLATFORM,
+    FILTER_BY,
     FILTER_BY_ORIGIN,
     SORT_BY } from "../actions"
 
@@ -42,31 +41,24 @@ const rootReducer = (state = initialState, action) => {
                 createVideogameResponse: action.payload
             }
         case GET_ALL_GENRES:
-            action.payload.unshift({id: 0, name: "All genres"});
             return {
                 ...state,
                 allGenres: action.payload
             }
         case GET_ALL_PLATFORMS:
-            action.payload.unshift({id: 0, name: "All platforms"});
             return {
                 ...state,
                 allPlatforms: action.payload
             } 
-        case FILTER_BY_GENRE:
+        case FILTER_BY:
             
-            const filteredGenre = action.payload === "All genres" ? state.videogamesCopy : filter(state.videogamesCopy, action.payload, "genres");
+            const { genres, platforms } = action.payload.filterValues;
+
+            const filteredGames = genres.length === 0 && platforms.length === 0 ? state.videogamesCopy : filter(state.videogamesCopy, genres, platforms, "genres", "platforms");
             return {
                 ...state,
-                videogames: filteredGenre
+                videogames: filteredGames
             }
-        case FILTER_BY_PLATFORM:
-            const filteredPlatform = action.payload === "All platforms" ? state.videogamesCopy : filter(state.videogamesCopy, action.payload, "platforms");
-            return {
-                ...state,
-                videogames: filteredPlatform
-            }
-        
         case FILTER_BY_ORIGIN:
             if (action.payload === "all") {
                 return {
@@ -92,6 +84,7 @@ const rootReducer = (state = initialState, action) => {
             const sortedItems = sortItems(state.videogames, action.payload);
             
             return {
+                
                 ...state,
                 videogames: sortedItems
             }

@@ -73,7 +73,7 @@ router.get("/", async (req, res, next) => {
                 res.status(200).send(dataFromDb);
             } else {
                 const page_size_max = 40;
-                const max = 100;
+                const max = 200;
                 let page = 1;
                 let dataMax = max - dataFromDb.length;
                 let numberCalls = [];
@@ -113,7 +113,6 @@ router.get("/", async (req, res, next) => {
                 // Juntar la data de la db con la api
                 const dataDbApi = [...dataFromApi, ...dataFromDb];
 
-                console.log(dataDbApi.length);
                 res.status(200).send(dataDbApi);
             }
         
@@ -168,11 +167,17 @@ router.get("/:idVideogame", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
 
     const { name, description, released, rating, background_image, playtime, genres, platforms, originDatbase } = req.body;
+    
+    const idAux = name.slice(0, name.length > 4 ? 3 : name.length);
+    const id = `${INDEX}${idAux}`;
 
+    const find = await Videogame.findOne({where: {id: id}});
+
+    if (find) {
+        res.status(404).send({message: `The videogame with id (${id}) already exists in the database.`});
+    } else {
         try {
-            
-            const idAux = name.slice(0, name.length > 4 ? 3 : name.length);
-            const id = `${INDEX}${idAux}`;
+    
             const videoGameCreated = await Videogame.create({
                 id,
                 name,
@@ -183,9 +188,7 @@ router.post("/", async (req, res, next) => {
                 playtime,
                 originDatbase
             });
-
             INDEX++;
-
             // Funcion para crear o encontrar un genero o plataforma!
             const findOrCreateItem = async(data, model) => {
                 const response = await model.findOrCreate({
@@ -194,23 +197,20 @@ router.post("/", async (req, res, next) => {
                     }});
                 return response[0];
             }
-
             // Promesas para agregar plataformas y generos!
             await Promise.all(
                 // Con este map se crean todos los generos uno por uno
                 genres.map(async genre => videoGameCreated.addGenre(await findOrCreateItem(genre, Genre))),
                 platforms.map(async platform => videoGameCreated.addPlatform(await findOrCreateItem(platform, Platforms)))
             )
-
             res.status(201).send({message: "Datos agregados exitosamente"});
-
+            
         } catch (error) {
-            res.status(400).send({error: error.message});
+            res.status(400).send({message: error.message});
         }
     }
-    
-    
-);
+
+});
 
 
 

@@ -1,9 +1,28 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createVideogame, getAllGenres, getAllPlatforms } from "../../redux/actions/index.js";
+import { useNavigate } from "react-router-dom";
 
 function CreateVideogame () {
 
+    // Use dispatch y use selectors
+    let allGenres = useSelector(state => state.allGenres);
+    allGenres = allGenres.slice(1);
+    let allPlatforms = useSelector(state => state.allPlatforms);
+    allPlatforms = allPlatforms.slice(1);
+
+    let navigate = useNavigate();
+
+    const dispatch = useDispatch();
+
+    // Use effect para obtener todos los genres y platforms del back
+
+    useEffect(() => {
+
+        dispatch(getAllGenres());
+        dispatch(getAllPlatforms());
+        
+    }, [dispatch]);
 
     // State del input dinamico
     const [input, setInput] = useState({
@@ -20,6 +39,12 @@ function CreateVideogame () {
     // State de errores
     const [error, setError] = useState({});
 
+    // State para genre checkboxes
+    const [checkedGenre, setCheckedGenre] = useState([]);
+
+    // State para platforms checkboxes
+    const [checkedPlatform, setCheckedPlatform] = useState([]);
+
     // State checked otra plataforma
     const [checkedOther, setCheckedOther] = useState(false);
 
@@ -28,24 +53,9 @@ function CreateVideogame () {
         name: ""
     });
     
-    // Use dispatch y use selectors
-    const allGenres = useSelector(state => state.allGenres);
-    const allPlatforms = useSelector(state => state.allPlatforms);
-    // const createVgResponse = useSelector(state => state.createVideogameResponse);
-    const dispatch = useDispatch();
-
-    // Use effect para obtener todos los genres y platforms del back
-
-    useEffect(() => {
-
-        dispatch(getAllGenres());
-        dispatch(getAllPlatforms());
-        
-    }, [dispatch]);
-
-
     // Manejo de algunos errores comunes
     const handleRequireError = (value, name) => {
+        
         if (value.length === 0) {
             setError({
                 ...error,
@@ -54,11 +64,12 @@ function CreateVideogame () {
         } else {
             setError(prevVal => {
                 const copy = {...prevVal};
-
-                delete prevVal[name];
-
+                
+                delete copy[name];
+                
                 return copy;
             });
+            
         };
     };
 
@@ -79,7 +90,7 @@ function CreateVideogame () {
                     setError({
                         ...error,
                         [name]: "The value must be between 0.0 and 5.0"
-                        });
+                    });
                 } 
                 // Con esta cosa (regular expression) se puede analizar si un numero tiene 2 decimales!
                 else if (!/^\d*(\.\d{0,2})?$/.test(value)) {
@@ -96,7 +107,7 @@ function CreateVideogame () {
                     setError(prevVal => {
                         const copy = {...prevVal};
         
-                        delete prevVal[name];
+                        delete copy[name];
         
                         return copy;
                     });
@@ -117,7 +128,7 @@ function CreateVideogame () {
                     setError(prevVal => {
                         const copy = {...prevVal};
         
-                        delete prevVal[name];
+                        delete copy[name];
         
                         return copy;
                     });
@@ -134,11 +145,14 @@ function CreateVideogame () {
                     setError(prevVal => {
                         const copy = {...prevVal};
         
-                        delete prevVal[name];
+                        delete copy[name];
         
                         return copy;
                     });
                 };
+                break;
+            case "otherPlatform":
+                handleRequireError(value, name);
                 break;
             default:
                 return "That prop does not exist.";
@@ -160,44 +174,54 @@ function CreateVideogame () {
     };
 
     // Genre change
-    function handleChangeGenre(event) {
+    function handleChangeGenre(value) {
+
+        const currentIndex = checkedGenre.indexOf(value);
+        const newChecked = [...checkedGenre];
         
-        const { value, checked } = event.target;
-        
-        // Primero se llama el valor iniciarl del input (en este caso genres arr vacio)
         const { genres } = input;
 
-        if (checked) {
+        if(currentIndex === -1) {
+            newChecked.push(value);
             setInput({
                 ...input,
                 genres: [...genres, {name: value}]
-            })
+            });
         } else {
+            newChecked.splice(currentIndex, 1);
             setInput({
                 ...input,
                 genres: genres.filter(genre => genre.name !== value)
-            })
+            });
         }
-        
+
+        setCheckedGenre(newChecked);
+
     };
 
     // Platform change
-    function handleChangePlatform(event) {
-        const { value, checked } = event.target;
+    function handleChangePlatform(value) {
 
+        const currentIndex = checkedPlatform.indexOf(value);
+        const newChecked = [...checkedPlatform];
+        
         const { platforms } = input;
 
-        if (checked) {
+        if(currentIndex === -1) {
+            newChecked.push(value);
             setInput({
                 ...input,
                 platforms: [...platforms, {name: value}]
             });
         } else {
+            newChecked.splice(currentIndex, 1);
             setInput({
                 ...input,
                 platforms: platforms.filter(platform => platform.name !== value)
-            })
+            });
         }
+
+        setCheckedPlatform(newChecked);
         
     }
 
@@ -226,18 +250,22 @@ function CreateVideogame () {
             platforms: [...platforms, otherPlatform]
         });
 
+        alert(`Platform ${otherPlatform.name} has been added successfully.`);
+
         setOtherPlatform({
             name: ""
         });
         
-
+        
         event.preventDefault();
     }
 
 
-    function handleClick(event){
+    function handleSubmit(event){
+        event.preventDefault();
         
         dispatch(createVideogame(input));
+        
 
         setInput({
             name: "",
@@ -252,12 +280,18 @@ function CreateVideogame () {
 
         setCheckedOther(false);
 
-        event.preventDefault();
+        setCheckedGenre([]);
+
+        setCheckedPlatform([]);
+        
+        alert("Videogame added successfully");
+        navigate("/videogames");
+
     };
     
     return (
         <div>
-            <form>
+            <form onSubmit={handleSubmit}>
 
                 {/* Name text*/}
                 <label>Name:</label>
@@ -352,15 +386,14 @@ function CreateVideogame () {
                 <br />
                 {input.genres.length === 0 ? <span>You must select at least 1 genre</span> : null}
                 <br />
-                {allGenres && allGenres.slice(1).map(genre => {
+                {allGenres && allGenres.map((genre) => {
                     return (
                         <div key={genre.id}>
                             <label>{genre.name}</label>
                             <input 
                                 type={"checkbox"}
-                                onChange={handleChangeGenre}
-                                value={genre.name} 
-                                name={genre.name}   
+                                onChange={() => handleChangeGenre(genre.name)}
+                                checked={checkedGenre.indexOf(genre.name) === -1 ? false : true}
                             ></input>
                         </div>
                     )
@@ -373,19 +406,19 @@ function CreateVideogame () {
                 {/* Platforms array selection*/}
                 <label>Platforms:</label>
                 <br />
-                {allPlatforms && allPlatforms.slice(1).map(platform => {
+                {allPlatforms && allPlatforms.map((platform, index) => {
                     return (
                         <div key={platform.id}>
                             <label>{platform.name}</label>
                             <input 
                                 type={"checkbox"}
-                                onChange={handleChangePlatform}
-                                value={platform.name}
-                                name={platform.name}    
+                                onChange={() => handleChangePlatform(platform.name)}
+                                checked={checkedPlatform.indexOf(platform.name) === -1 ? false : true }    
                             ></input>
                         </div>
                     )
                 })}
+                
                 <br />
                 <label>¿Add other type of platform?</label>
                 <input type={"checkbox"} checked={checkedOther} name={"other"} onChange={activateOther}></input>
@@ -397,13 +430,22 @@ function CreateVideogame () {
                     placeholder="Add other platform"
                 ></input>
                 <br />
-                
-                <button onClick={handleOtherPlatformClick}>Add</button>
+                <button 
+                    type="button" 
+                    onClick={handleOtherPlatformClick}
+                    disabled={!checkedOther || otherPlatform.name.length === 0 ? true : null}
+                >Add</button>
+                {error.otherPlatform ? <span>{error.otherPlatform}</span> : null}
 
                 <br />
                 <br />
-                <button onClick={handleClick} disabled={Object.entries(error).length === 0 && input.platforms.length > 0 && input.genres.length > 0 ? null : true}><span>Send</span></button>
+                <input 
+                    type={"submit"} 
+                    disabled={Object.entries(error).length === 0 && input.platforms.length > 0 && input.genres.length > 0 ? null : true}
+                    value="Submit"
+                ></input>
                 
+                <br />
             </form>
         </div>
     )

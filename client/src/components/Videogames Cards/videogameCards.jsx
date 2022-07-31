@@ -5,8 +5,7 @@ import {
     getAllVideogames, 
     getAllGenres, 
     getAllPlatforms, 
-    filterByGenre, 
-    filterByPlatform,
+    filterBy,
     sortBy,
     filterByOrigin } from "../../redux/actions/index.js";
 
@@ -43,24 +42,67 @@ function VideogameCards () {
         setCurrentPage(pageNumber);
     };
 
+    // State para checboxes de genre
+    const [checkedGenre, setCheckedGenre] = useState([]);
+
+    // State para checkboxes de platforms
+    const [checkedPlatform, setCheckedPlatform] = useState([]);
+
     // Filtrado por genero
 
-    function handleChangeSelectGenre (event) {
+    function handleChangeSelectGenre (value) {
+        // Primero se recibe el valor que se paso por el onChange
+        // y se busca el indice actual del elemento que haya en el array
+        const currentIndex = checkedGenre.indexOf(value);
 
-        const { value } = event.target;
+        // se trae el estado anterior del checked
+        const newChecked = [...checkedGenre];
 
-        dispatch(filterByGenre(value));
+        // Se establece esta condicion
+        if (currentIndex === -1) {
+            // Si no esta el valor se añade al array del estado
+            newChecked.push(value);
+
+            dispatch(filterBy({genres: newChecked, platforms: checkedPlatform}));
+        } else {
+            // Si esta se hace un filtro con splice!
+            newChecked.splice(currentIndex, 1);
+
+            dispatch(filterBy({genres: newChecked, platforms: checkedPlatform}));
+        }
+
+        // Se añade la el listado de los valores previos modificados!
+        setCheckedGenre(newChecked);
+        
         setCurrentPage(1);
+
     }
 
     // Filtrado por plataforma
+    
+    function handleChangeSelectPlatform (value) {
+        
+        const currentIndex = checkedPlatform.indexOf(value);
 
-    function handleChangeSelectPlatform (event) {
-        const { value } = event.target;
-        dispatch(filterByPlatform(value));
+        const newChecked = [...checkedPlatform];
+
+        if (currentIndex === -1) {
+            newChecked.push(value);
+
+            dispatch(filterBy({genres: checkedGenre, platforms: newChecked}));
+        } else {
+            newChecked.splice(currentIndex, 1);
+            
+            dispatch(filterBy({genres: checkedGenre, platforms: newChecked}));
+        }
+
+        setCheckedPlatform(newChecked);
+        
+
         setCurrentPage(1);
-    }
 
+    }
+    
     // Filtrado de datos por origen
 
     function handleChangeOriginData (event) {
@@ -69,6 +111,17 @@ function VideogameCards () {
         dispatch(filterByOrigin(value));
 
         setCurrentPage(1);
+    }
+
+    function handleResetFilter (event) {
+        
+        setCheckedGenre([]);
+        setCheckedPlatform([]);
+
+        dispatch(getAllVideogames());
+        setCurrentPage(1);
+
+        event.preventDefault();
     }
 
     // Ordenamientos
@@ -81,10 +134,13 @@ function VideogameCards () {
         
         const { value } = event.target;
 
-        dispatch(sortBy(value));
-        // Indicacion para iniciar en la pagina 1
-        setCurrentPage(1);
-        setSort(`Ordered by ${value}`);
+        if (value !== "default") {
+            dispatch(sortBy(value));
+            // Indicacion para iniciar en la pagina 1
+            setCurrentPage(1);
+            setSort(`Ordered by ${value}`);
+        }
+
     }
 
     // Search bar
@@ -119,12 +175,7 @@ function VideogameCards () {
     
     return (
         <div>
-            <button onClick={() => {
-                dispatch(getAllVideogames());
-                setCurrentPage(1);
-                }}
-            >Reset</button>
-            <br />
+            
             <br />
 
             <input type={"text"} placeholder={"Search bar..."} onChange={handleChangeSearchBar} value={searchName}></input>
@@ -140,22 +191,40 @@ function VideogameCards () {
             </select>
             
             <br />
-            <select onChange={handleChangeSelectGenre}>
-                {allGenres && allGenres.map(genre => {
-                    return <option key={genre.id} value={genre.name}>{genre.name}</option>
-                })}
-            </select>
             
-            <select onChange={handleChangeSelectPlatform}>
-                {allPlatforms && allPlatforms.map(platform => {
-                    return <option key={platform.id} value={platform.name}>{platform.name}</option>
-                })}
-            </select>
+            {allGenres && allGenres.map((genre) => {
+                return (
+                    <div key={genre.id}>
+                        <label>{genre.name}</label>
+                        <input
+                            type={"checkbox"}
+                            onChange={() => handleChangeSelectGenre(genre.name)}
+                            checked={checkedGenre.indexOf(genre.name) === - 1 ? false : true}
+                        ></input>
+                    </div>
+                )
+            })}
 
+            <br />
+            
+            {allPlatforms && allPlatforms.map((platform) => {
+                return (
+                    <div key={platform.id}>
+                        <label>{platform.name}</label>
+                        <input
+                            type={"checkbox"}
+                            onChange={() => handleChangeSelectPlatform(platform.name)}
+                            checked={checkedPlatform.indexOf(platform.name) === -1 ? false : true}
+                        ></input>
+
+                    </div>
+                )
+            })}
+            <button onClick={handleResetFilter}>Remove filters</button>
             <br />
             <span>Sort Ascending</span>
             <select onChange={handleSort}>
-                <option>Select option</option>
+                <option value={"default"}>Select option</option>
                 <option value={"A - Z"}>A - Z</option>
                 <option value={"ratingAsc"}>Rating</option>
                 <option value={"releasedAsc"}>Released</option>
@@ -165,7 +234,7 @@ function VideogameCards () {
             <br />
             <span>Sort Descending</span>
             <select onChange={handleSort}>
-                <option>Select option</option>
+                <option value={"default"}>Select option</option>
                 <option value={"Z - A"}>Z - A</option>
                 <option value={"ratingDesc"}>Rating</option>
                 <option value={"releasedDesc"}>Released</option>
@@ -188,7 +257,7 @@ function VideogameCards () {
                         rating={game.rating}
                         background_image={game.background_image}
                         playtime={game.playtime}
-                        genre={game.genres}
+                        genres={game.genres}
                         platforms={game.platforms}
                     />
                 )
