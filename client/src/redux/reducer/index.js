@@ -9,7 +9,7 @@ import {
     FILTER_BY_ORIGIN,
     SORT_BY } from "../actions"
 
-import { filter, sortItems } from "../utils";
+import { filterData, sortItems } from "../utils";
 
 const initialState = {
     videogames: [],
@@ -52,9 +52,9 @@ const rootReducer = (state = initialState, action) => {
             } 
         case FILTER_BY:
             
-            const { genres, platforms } = action.payload.filterValues;
-
-            const filteredGames = genres.length === 0 && platforms.length === 0 ? state.videogamesCopy : filter(state.videogamesCopy, genres, platforms, "genres", "platforms");
+            const { genres, platforms, origin } = action.payload.filterValues;
+            
+            const filteredGames = filterData(state.videogamesCopy, genres, platforms, "genres", "platforms", origin);
             return {
                 ...state,
                 videogames: filteredGames

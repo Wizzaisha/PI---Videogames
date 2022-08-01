@@ -1,0 +1,15 @@
+.paginationNav button {
+  width: 2.4rem;
+  height: 2.4rem;
+  background-color: rgba(41, 1, 55, 0.759);
+  color: #ededed;
+  border: 0.15rem solid #ededed;
+  border-radius: 10px;
+  margin: 0.2rem;
+}
+
+.paginationNav button:hover {
+  background-color: #ededed;
+  color: black;
+  border: 0.15rem solid rgba(41, 1, 55, 0.759);
+}

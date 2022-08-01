@@ -1,4 +1,5 @@
 import React from "react";
+import s from "./Pagination.module.css";
 
 function Pagination ({ videogamesPerPage, allVideogames, pagination }) {
     // Arreglo de numeros con la cantidad de paginas necesarias
@@ -11,7 +12,7 @@ function Pagination ({ videogamesPerPage, allVideogames, pagination }) {
     };
 
     return (
-        <nav>
+        <nav className={s.paginationNav}>
             {pageNumbers && pageNumbers.map(number => (
                 <button key={number} onClick={() => pagination(number)}>{number}</button>
             ))}

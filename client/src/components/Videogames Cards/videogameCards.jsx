@@ -6,11 +6,13 @@ import {
     getAllGenres, 
     getAllPlatforms, 
     filterBy,
-    sortBy,
-    filterByOrigin } from "../../redux/actions/index.js";
+    filterByOrigin,
+    sortBy, } from "../../redux/actions/index.js";
 
 // Componente de paginado
 import Pagination from "./Pagination";
+
+import s from "./VideogameCards.module.css";
 
 
 function VideogameCards () {
@@ -48,6 +50,10 @@ function VideogameCards () {
     // State para checkboxes de platforms
     const [checkedPlatform, setCheckedPlatform] = useState([]);
 
+    // State para el valor de filtrado por origen
+
+    const [origin, setOrigin] = useState("");
+
     // Filtrado por genero
 
     function handleChangeSelectGenre (value) {
@@ -62,14 +68,11 @@ function VideogameCards () {
         if (currentIndex === -1) {
             // Si no esta el valor se añade al array del estado
             newChecked.push(value);
-
-            dispatch(filterBy({genres: newChecked, platforms: checkedPlatform}));
         } else {
             // Si esta se hace un filtro con splice!
             newChecked.splice(currentIndex, 1);
-
-            dispatch(filterBy({genres: newChecked, platforms: checkedPlatform}));
         }
+        dispatch(filterBy({genres: newChecked, platforms: checkedPlatform, origin: origin}));
 
         // Se añade la el listado de los valores previos modificados!
         setCheckedGenre(newChecked);
@@ -88,18 +91,18 @@ function VideogameCards () {
 
         if (currentIndex === -1) {
             newChecked.push(value);
-
-            dispatch(filterBy({genres: checkedGenre, platforms: newChecked}));
+            
         } else {
             newChecked.splice(currentIndex, 1);
             
-            dispatch(filterBy({genres: checkedGenre, platforms: newChecked}));
         }
 
-        setCheckedPlatform(newChecked);
-        
+        dispatch(filterBy({genres: checkedGenre, platforms: newChecked, origin: origin}));
 
+        setCheckedPlatform(newChecked);
+    
         setCurrentPage(1);
+
 
     }
     
@@ -108,9 +111,10 @@ function VideogameCards () {
     function handleChangeOriginData (event) {
         const { value } = event.target;
 
+        setOrigin(value);
         dispatch(filterByOrigin(value));
-
         setCurrentPage(1);
+        
     }
 
     function handleResetFilter (event) {
@@ -176,92 +180,131 @@ function VideogameCards () {
     return (
         <div>
             
-            <br />
+            <div className={s.searchBarContainer}>
+                <input 
+                    type={"text"} 
+                    placeholder={"Search bar..."} 
+                    onChange={handleChangeSearchBar} 
+                    value={searchName}
+                ></input>
+                <button onClick={handleClickSearchBar}>Search</button>
+            </div>
 
-            <input type={"text"} placeholder={"Search bar..."} onChange={handleChangeSearchBar} value={searchName}></input>
-            <button onClick={handleClickSearchBar}>Search</button>
 
-            <br />
-            <span>Origin data</span>
-            <br />
-            <select onChange={handleChangeOriginData}>
-                <option value={"all"}>All</option>
-                <option value={"database"}>Database</option>
-                <option value={"api"}>API</option>
-            </select>
-            
-            <br />
-            
-            {allGenres && allGenres.map((genre) => {
-                return (
-                    <div key={genre.id}>
-                        <label>{genre.name}</label>
-                        <input
-                            type={"checkbox"}
-                            onChange={() => handleChangeSelectGenre(genre.name)}
-                            checked={checkedGenre.indexOf(genre.name) === - 1 ? false : true}
-                        ></input>
+            <div className={s.mainContentContainer}>
+
+                
+                <div className={s.filtersContainer}>
+                    <div className={s.resetButtonContainer}>
+                        <button onClick={handleResetFilter} className={s.resetButton}>Remove filters</button>
                     </div>
-                )
-            })}
 
-            <br />
-            
-            {allPlatforms && allPlatforms.map((platform) => {
-                return (
-                    <div key={platform.id}>
-                        <label>{platform.name}</label>
-                        <input
-                            type={"checkbox"}
-                            onChange={() => handleChangeSelectPlatform(platform.name)}
-                            checked={checkedPlatform.indexOf(platform.name) === -1 ? false : true}
-                        ></input>
+                    <div className={s.filterGenres}>
+                        <h4>Filter by genres</h4>
+                        {allGenres && allGenres.map((genre) => {
+                            return (
+                                <div key={genre.id} className={s.filterInputsStyle}>
+                                    <label>{genre.name}</label>
+                                    <input
+                                        type={"checkbox"}
+                                        onChange={() => handleChangeSelectGenre(genre.name)}
+                                        checked={checkedGenre.indexOf(genre.name) === - 1 ? false : true}
+                                    ></input>
+                                </div>
+                            )
+                        })}
+                    </div>
+                    
+                    <div className={s.filterPlatforms}>
+                        <h4>Filter by platforms</h4>
+                        {allPlatforms && allPlatforms.map((platform) => {
+                            return (
+                                <div key={platform.id} className={s.filterInputsStyle}>
+                                    <label>{platform.name}</label>
+                                    <input
+                                        type={"checkbox"}
+                                        onChange={() => handleChangeSelectPlatform(platform.name)}
+                                        checked={checkedPlatform.indexOf(platform.name) === -1 ? false : true}
+                                    ></input>
+
+                                </div>
+                            )
+                        })}
+                    </div>
+                </div>
+ 
+                <div>
+
+                    <div className={s.sortContainer}>
+
+                        <div className={s.sortsItems}>
+                            <span className={s.sortText}>Filter by data source</span>
+                            <select onChange={handleChangeOriginData} className={s.sortSelects}>
+                                <option value={"all"}>All</option>
+                                <option value={"database"}>Database</option>
+                                <option value={"api"}>API</option>
+                            </select>
+                        </div>
+                        
+                        <div className={s.sortsItems}>
+
+                            <span className={s.sortText}>Sort Ascending</span>
+                            <select onChange={handleSort} className={s.sortSelects}>
+                                <option value={"default"}>Select option</option>
+                                <option value={"A - Z"}>A - Z</option>
+                                <option value={"ratingAsc"}>Rating</option>
+                                <option value={"releasedAsc"}>Released</option>
+                                <option value={"playtimeAsc"}>Playtime</option>
+                            </select>
+                        </div>
+
+                        <div className={s.sortsItems}>
+                            <span className={s.sortText}>Sort Descending</span>
+                            <select onChange={handleSort} className={s.sortSelects}>
+                                <option value={"default"}>Select option</option>
+                                <option value={"Z - A"}>Z - A</option>
+                                <option value={"ratingDesc"}>Rating</option>
+                                <option value={"releasedDesc"}>Released</option>
+                                <option value={"playtimeDesc"}>Playtime</option>
+                            </select>
+                        </div>
+
 
                     </div>
-                )
-            })}
-            <button onClick={handleResetFilter}>Remove filters</button>
-            <br />
-            <span>Sort Ascending</span>
-            <select onChange={handleSort}>
-                <option value={"default"}>Select option</option>
-                <option value={"A - Z"}>A - Z</option>
-                <option value={"ratingAsc"}>Rating</option>
-                <option value={"releasedAsc"}>Released</option>
-                <option value={"playtimeAsc"}>Playtime</option>
-            </select>
 
-            <br />
-            <span>Sort Descending</span>
-            <select onChange={handleSort}>
-                <option value={"default"}>Select option</option>
-                <option value={"Z - A"}>Z - A</option>
-                <option value={"ratingDesc"}>Rating</option>
-                <option value={"releasedDesc"}>Released</option>
-                <option value={"playtimeDesc"}>Playtime</option>
-            </select>
+                    <div className={s.cardsContainer}>
+                        {currentVideogames && currentVideogames.map(game => {
+                            return (
+                                <VideogameCard 
+                                    key={game.id}
+                                    id={game.id}
+                                    name={game.name}
+                                    description={game.description}
+                                    released={game.released}
+                                    rating={game.rating}
+                                    background_image={game.background_image}
+                                    playtime={game.playtime}
+                                    genres={game.genres}
+                                    platforms={game.platforms}
+                                />
+                            )
+                        })}
+                    </div>
+                    <div className={s.paginationContainer}>
+                        <Pagination 
+                            videogamesPerPage={videogamePerPage}
+                            allVideogames={allVideogames.length}
+                            pagination={pagination}
+                        />
+                    </div>
 
-            <Pagination 
-                videogamesPerPage={videogamePerPage}
-                allVideogames={allVideogames.length}
-                pagination={pagination}
-            />
-            {currentVideogames && currentVideogames.map(game => {
-                return (
-                    <VideogameCard 
-                        key={game.id}
-                        id={game.id}
-                        name={game.name}
-                        description={game.description}
-                        released={game.released}
-                        rating={game.rating}
-                        background_image={game.background_image}
-                        playtime={game.playtime}
-                        genres={game.genres}
-                        platforms={game.platforms}
-                    />
-                )
-            })}
+                </div>
+
+
+
+            </div>
+
+
         </div>
     )
 }

@@ -1,19 +1,29 @@
-export function filter(data, genres, platforms, genreModel, platformModel){
+export function filterData(data, genres, platforms, genreModel, platformModel, origin){
 
+    let videogamesData = [];
+    
+    if (origin === "database") {
+        videogamesData = data.filter(element => element.hasOwnProperty("originDatbase"));
+    } else if (origin === "api") {
+        videogamesData = data.filter(element => !element.hasOwnProperty("originDatbase"));
+    } else {
+        videogamesData = data;
+    }
+    
     if (platforms.length === 0) {
-        return data.filter(game => {
+        return videogamesData.filter(game => {
             return game[genreModel].filter(element => {
                 return genres.indexOf(element.name) > -1;
             }).length === genres.length;
         });
     } else if (genres.length === 0) {
-        return data.filter(game => {
+        return videogamesData.filter(game => {
             return game[platformModel].filter(element => {
                 return platforms.indexOf(element.name) > -1;
             }).length === platforms.length;
         });
     } else {
-        return data.filter(game => {
+        return videogamesData.filter(game => {
             const genresFiltered = game[genreModel].filter(element => {
                 return genres.indexOf(element.name) > -1;
             });
@@ -25,9 +35,6 @@ export function filter(data, genres, platforms, genreModel, platformModel){
             return genresFiltered.length === genres.length && platformsFiltered.length === platforms.length;
         });
     }
-
-
-
 
 }
 
@@ -82,4 +89,3 @@ function sortDescending(data, property) {
         return 0;
     });
 }
-

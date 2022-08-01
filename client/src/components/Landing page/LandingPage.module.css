@@ -1,0 +1,64 @@
+.landingPageCover {
+  background-image: url("../../../public//img/wall3.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  height: 100vh;
+  width: 100%;
+  display: grid;
+}
+
+.items {
+  width: clamp(calc(320px - 3rem), 75%, 70ch);
+  height: calc(75vh - 2.5rem);
+  background-color: #0403036f;
+  border: 0.3rem solid #edededc0;
+
+  justify-self: center;
+  align-self: center;
+
+  text-align: center;
+}
+
+.landTitle {
+  padding: 6% 0;
+  font-size: 4rem;
+  font-weight: 700;
+}
+
+.landText {
+  font-size: 1.5rem;
+  padding-bottom: 5%;
+}
+
+.landButton {
+  background-color: #0c8931cd;
+  font-size: 17px;
+  color: #ededed;
+  width: 40%;
+  height: 15%;
+  border-radius: 10px;
+  border: 2px solid #ededed;
+}
+
+.landButton:hover {
+  background-color: #040303;
+}
+
+@media (max-width: 700px) {
+  .landTitle {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 10% 0;
+  }
+
+  .landText {
+    font-size: 1rem;
+    margin: 10% 0;
+  }
+
+  .landButton {
+    font-size: 1rem;
+  }
+}

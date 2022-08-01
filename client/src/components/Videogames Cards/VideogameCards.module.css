@@ -1,0 +1,216 @@
+/* Estilos barra de busqueda */
+.searchBarContainer {
+  padding: 2%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.searchBarContainer input {
+  width: 50%;
+  height: 2rem;
+  border-radius: 7px;
+  background-color: rgba(41, 1, 55, 0.759);
+  box-shadow: none;
+  border: 0.1rem solid #ededed;
+  color: #ededed;
+}
+
+.searchBarContainer input:hover {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px, #0c8931cd 0px 0px 0px 3px;
+}
+
+.searchBarContainer input:focus {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px, #0c8931cd 0px 0px 0px 3px;
+}
+
+.searchBarContainer button {
+  width: 10%;
+  background-color: rgba(41, 1, 55, 0.759);
+  color: #ededed;
+  border: 0.1rem solid #ededed;
+  border-radius: 7px;
+}
+
+.searchBarContainer button:hover {
+  background-color: #0c8931cd;
+}
+
+/* Estilos filtros y reset button */
+
+.resetButtonContainer {
+  padding: 1.5rem 0 5px 0;
+  margin-top: 20px;
+}
+
+.resetButton {
+  background-color: #ff0000a6;
+  color: #ededed;
+  font-size: 1.3rem;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.resetButton:hover {
+  background-color: #ff4d00;
+}
+
+.filtersContainer h4 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-top: 0;
+}
+
+.filterGenres {
+  margin-left: 10%;
+  text-align: left;
+  background-color: #09246388;
+  border-radius: 20px;
+  border: 1px solid #fffefebd;
+  padding: 1rem;
+  margin-top: 25px;
+}
+
+.filterPlatforms {
+  margin-left: 10%;
+  text-align: left;
+  background-color: #0f3d3eaa;
+  border-radius: 20px;
+  border: 1px solid #fffefebd;
+  padding: 1rem;
+  margin-top: 25px;
+}
+
+.filterInputsStyle {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2rem;
+  align-items: center;
+}
+
+.filterInputsStyle input {
+  -webkit-appearance: none;
+  appearance: none;
+
+  background-color: #484d4f48;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.15rem;
+  border: 0.15rem solid #fffefebd;
+  font: inherit;
+  transform: translateY(-0.075em);
+
+  display: grid;
+  place-content: center;
+}
+
+.filterInputsStyle input::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transform: scale(0);
+  transform-origin: bottom left;
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--form-control-color);
+  /* Windows High Contrast Mode */
+  background-color: #fffefebd;
+}
+
+.filterInputsStyle input:checked::before {
+  transform: scale(1);
+}
+
+.filterInputsStyle input:focus {
+  outline: max(2px, 0.15em) solid #fffefebd;
+  outline-offset: max(2px, 0.15em);
+}
+
+.filterInputsStyle input:hover {
+  background-color: #f0bebe77;
+}
+
+/* Estilos sort selector y filter por origen de datos */
+.sortContainer {
+  padding: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 6rem;
+}
+
+.sortText {
+  font-size: 1.2rem;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.sortsItems {
+  text-align: left;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sortSelects {
+  background-color: rgba(41, 1, 55, 0.759);
+  height: 2rem;
+  border: 1px solid #ededed;
+  border-radius: 8px;
+  color: #ededed;
+  font-size: 1rem;
+}
+.sortSelects option {
+  font-size: 1rem;
+}
+
+.sortSelects:hover {
+  background-color: #ededed;
+  color: black;
+  border: 0.15rem solid rgba(41, 1, 55, 0.759);
+}
+
+/* Contenedor princial de los filtros, cartas y paginado */
+.mainContentContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+/* Contenedor de las cartas */
+.cardsContainer {
+  gap: 1rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Contenedor del paginado */
+.paginationContainer {
+  padding: 2rem;
+}
+
+@media screen and (min-width: 100ch) {
+  .mainContentContainer {
+    display: grid;
+    grid-template-columns: minmax(15ch, 30%) 1fr;
+  }
+}
+
+@media screen and (min-width: 140ch) {
+  .mainContentContainer {
+    display: grid;
+    grid-template-columns: minmax(15ch, 20%) 1fr;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .searchBarContainer button {
+    width: 30%;
+  }
+}

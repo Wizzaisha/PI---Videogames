@@ -7,7 +7,7 @@ import {
 
 // Import routes
 import LandingPage from "./components/Landing page/LandingPage.jsx";
-import NavBarHeader from "./components/NavBarHeader/NavBarHeader.jsx";
+import MainPage from "./components/MainPage/MainPage.jsx";
 import CreateVideogame from "./components/Create Videogame/CreateVideogame.jsx";
 import DetailsVideogame from "./components/Details Videogame/DetailsVideogame.jsx";
 import VideogameCards from "./components/Videogames Cards/VideogameCards.jsx";
@@ -19,7 +19,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route path='/' element={<LandingPage />}></Route>
-        <Route path='/videogames' element={<NavBarHeader />}>
+        <Route path='/videogames' element={<MainPage />}>
           <Route index element={<VideogameCards />}></Route>
           <Route path=':idVideogame' element={<DetailsVideogame />}></Route>
           <Route path='create' element={<CreateVideogame />}></Route>

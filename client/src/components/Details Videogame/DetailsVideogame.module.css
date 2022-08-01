@@ -1,0 +1,109 @@
+.detailsContainer {
+  margin: 0;
+}
+
+.goBackStyle {
+  display: flex;
+  justify-content: flex-start;
+  margin: 4rem 0 2rem 10rem;
+  padding: 2rem;
+  border-radius: 50%;
+  background-color: rgba(220, 17, 17, 0.463);
+  border: 0.15rem solid #fffefebd;
+  color: #ededed;
+}
+
+.goBackStyle:hover {
+  background-color: #ffffffdc;
+  color: black;
+}
+
+.videogameDetails {
+  width: clamp(20ch, 70%, 100ch);
+  padding: 0.5rem;
+  margin: 2rem;
+  border: 0.4rem solid #ededed;
+  border-radius: 20px;
+  margin: auto;
+  background-color: rgba(41, 1, 55, 0.759);
+}
+
+.cardInfoContainer {
+  border: 0.15rem solid #fffefebd;
+  border-radius: 20px;
+  margin-top: 20px;
+}
+
+.videogameDetails img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.detailsTitle {
+  font-size: 2.2rem;
+  padding: 0.6rem;
+  border-bottom: 0.15rem solid #fffefebd;
+}
+
+.detailsTextContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 0.15rem solid #fffefebd;
+}
+
+.detailsText {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 5rem;
+  border-bottom: 0.15rem solid #fffefebd;
+  border-right: 0.15rem solid #fffefebd;
+}
+
+.detailsDescription {
+  margin: 0;
+  padding: 1.5rem;
+  text-align: justify;
+  border-bottom: 0.15rem solid #fffefebd;
+}
+
+.detailsGenresAndPlatforms {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.detailsGenres {
+  text-align: start;
+  padding: 1rem 4rem 0 4rem;
+  border-right: 0.15rem solid #fffefebd;
+}
+
+.detailsPlatforms {
+  text-align: start;
+  padding: 1rem 4rem 0 4rem;
+}
+
+@media screen and (max-width: 600px) {
+  .detailsTextContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .detailsText {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .detailsGenresAndPlatforms {
+    grid-template-columns: 1fr;
+  }
+
+  .detailsGenres {
+    border-bottom: 0.15rem solid #fffefebd;
+    border-right: 0;
+  }
+}
