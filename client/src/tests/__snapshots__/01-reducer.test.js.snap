@@ -1,0 +1,108 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`My app Renderiza LandingPage correctamente 1`] = `
+<div
+  className="landingPageCover"
+>
+  <div
+    className="items"
+  >
+    <h1
+      className="landTitle"
+    >
+      Videogames page
+    </h1>
+    <p
+      className="landText"
+    >
+      Find your next adventure here!
+    </p>
+    <a
+      href="/videogames"
+      onClick={[Function]}
+    >
+      <button
+        className="landButton"
+      >
+        To main page
+      </button>
+    </a>
+  </div>
+</div>
+`;
+
+exports[`My app Renderiza la pagina principal correctamente 1`] = `
+<div
+  className="mainPageContainer"
+>
+  <div
+    className="headerContainer"
+  >
+    <h2
+      className="navHeadTitle"
+    >
+      Videogames API
+    </h2>
+    <p
+      className="navHeadText"
+    >
+      Find in our catalog your favorities videogames for your next adventure!
+    </p>
+    <div
+      className="navBar"
+    >
+      <a
+        href="/videogames"
+        onClick={[Function]}
+      >
+        <button
+          className="navHeadLink"
+        >
+          Home
+        </button>
+      </a>
+      <a
+        href="/videogames/create"
+        onClick={[Function]}
+      >
+        <button
+          className="navHeadLink"
+        >
+          Create Videogame
+        </button>
+      </a>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`My app renders correctly 1`] = `
+<div
+  className="landingPageCover"
+>
+  <div
+    className="items"
+  >
+    <h1
+      className="landTitle"
+    >
+      Videogames page
+    </h1>
+    <p
+      className="landText"
+    >
+      Find your next adventure here!
+    </p>
+    <a
+      href="/videogames"
+      onClick={[Function]}
+    >
+      <button
+        className="landButton"
+      >
+        To main page
+      </button>
+    </a>
+  </div>
+</div>
+`;
