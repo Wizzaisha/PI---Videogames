@@ -50,7 +50,7 @@ router.get("/", async (req, res, next) => {
                 }))
             );
 
-            res.status(201).send({message: "Datos agregados exitosamente"});
+            res.status(201).send({message: "Data successfully added to the database."});
 
         } else {
             res.status(200).send(findData);

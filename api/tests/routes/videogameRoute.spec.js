@@ -244,7 +244,7 @@ xdescribe("POST /videogames", () => {
     });
     test("Deberia añadir los datos a la base de datos", async () => {
         const response = await request(app).post("/videogames").send(postData)
-        expect(response.body.message).toBe("Datos agregados exitosamente");
+        expect(response.body.message).toBe("Data successfully added to the database.");
     })
 });
 

@@ -12,6 +12,7 @@ function CreateVideogame () {
     let allPlatforms = useSelector(state => state.allPlatforms);
     allPlatforms = allPlatforms.slice(1);
 
+    // Use navigate
     let navigate = useNavigate();
 
     const dispatch = useDispatch();
@@ -161,7 +162,6 @@ function CreateVideogame () {
     }
 
     // Manjeo de los cambios en el formulario
-
     function handleChange(event){
 
         const { name, value } = event.target;
@@ -233,6 +233,7 @@ function CreateVideogame () {
         
     }
 
+    // Manejo del valor de la nueva plataforma
     function handleOtherValue(event) {
         const { value } = event.target;
 
@@ -242,6 +243,7 @@ function CreateVideogame () {
 
     }
 
+    // Button para añadir nueva plataforma
     function handleOtherPlatformClick(event) {
 
         const { platforms } = input;
@@ -261,7 +263,7 @@ function CreateVideogame () {
         event.preventDefault();
     }
 
-
+    // Manejo del submit del formulario
     function handleSubmit(event){
         event.preventDefault();
         

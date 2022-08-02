@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -6,20 +6,23 @@ import { getVideogameDetails } from "../../redux/actions";
 import s from "./DetailsVideogame.module.css";
 
 function DetailsVideogame () {
-
+    // Params
     const params = useParams();
-
+    
+    // Navigate
     const navigate = useNavigate();
 
+    // selector y dispatch
     const videogame = useSelector(state => state.videogameDetails);
     const dispatch = useDispatch();
     
-    useState(() => {
+    useEffect(() => {
         dispatch(getVideogameDetails(params.idVideogame));
-    }, [dispatch]);
+    }, [params.idVideogame, dispatch]);
 
     return (
         <div className={s.detailsContainer}>
+            
             <h2>Details Videogame</h2>
 
             <button 

@@ -123,6 +123,7 @@ router.get("/", async (req, res, next) => {
 
 });
 
+// GET /videogame/:idVideogame
 router.get("/:idVideogame", async (req, res, next) => {
     const { idVideogame } = req.params;
 
@@ -141,7 +142,7 @@ router.get("/:idVideogame", async (req, res, next) => {
         // Primero busca en la base de datos
         // Db data
         const dbData = await Videogame.findOne(optionsDb);
-        console.log(dbData);
+        
         if (dbData) {
             res.status(200).send(dbData);
         } else {
