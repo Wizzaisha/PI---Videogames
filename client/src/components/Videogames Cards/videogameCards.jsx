@@ -5,9 +5,7 @@ import {
     getAllVideogames, 
     getAllGenres, 
     getAllPlatforms, 
-    filterBy,
-    filterByOrigin,
-    sortBy, } from "../../redux/actions/index.js";
+    filterAndSortBy } from "../../redux/actions/index.js";
 
 // Componente de paginado
 import Pagination from "./Pagination";
@@ -54,6 +52,13 @@ function VideogameCards () {
 
     const [origin, setOrigin] = useState("");
 
+    // State search bar
+    const [searchName, setSearchName] = useState("");
+
+    // Estados del sort
+    // Esta cosa SOLO SE USA para que react haga el renderizado!
+    const [sort, setSort] = useState("");
+
     // Filtrado por genero
 
     function handleChangeSelectGenre (value) {
@@ -72,7 +77,7 @@ function VideogameCards () {
             // Si esta se hace un filtro con splice!
             newChecked.splice(currentIndex, 1);
         }
-        dispatch(filterBy({genres: newChecked, platforms: checkedPlatform, origin: origin}));
+        dispatch(filterAndSortBy({genres: newChecked, platforms: checkedPlatform, origin: origin, sort: sort}));
 
         // Se añade la el listado de los valores previos modificados!
         setCheckedGenre(newChecked);
@@ -97,7 +102,7 @@ function VideogameCards () {
             
         }
 
-        dispatch(filterBy({genres: checkedGenre, platforms: newChecked, origin: origin}));
+        dispatch(filterAndSortBy({genres: checkedGenre, platforms: newChecked, origin: origin, sort: sort}));
 
         setCheckedPlatform(newChecked);
     
@@ -112,7 +117,7 @@ function VideogameCards () {
         const { value } = event.target;
 
         setOrigin(value);
-        dispatch(filterByOrigin(value));
+        dispatch(filterAndSortBy({genres: checkedGenre, platforms: checkedPlatform, origin: value, sort: sort}));
         setCurrentPage(1);
         
     }
@@ -130,16 +135,12 @@ function VideogameCards () {
 
     // Ordenamientos
 
-    // Estados del sort
-    // Esta cosa SOLO SE USA para que react haga el renderizado!
-    const [sort, setSort] = useState("");
-
     function handleSort (event) {
         
         const { value } = event.target;
 
         if (value !== "default") {
-            dispatch(sortBy(value));
+            dispatch(filterAndSortBy({genres: checkedGenre, platforms: checkedPlatform, origin: origin, sort: value}));
             // Indicacion para iniciar en la pagina 1
             setCurrentPage(1);
             setSort(`Ordered by ${value}`);
@@ -149,8 +150,7 @@ function VideogameCards () {
 
     // Search bar
 
-    // State search bar
-    const [searchName, setSearchName] = useState("");
+
 
     function handleChangeSearchBar(event) {
         const { value } = event.target;
@@ -167,14 +167,15 @@ function VideogameCards () {
         event.preventDefault();
     }
 
-
     useEffect(() => {
         
         dispatch(getAllVideogames());
         dispatch(getAllGenres());
         dispatch(getAllPlatforms());
-
+        
     }, [dispatch]);
+
+
 
     
     return (

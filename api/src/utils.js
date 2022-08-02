@@ -27,12 +27,11 @@ exports.detailsApiController = (data) => {
         metacritic: data["metacritic"],
         background_image: data["background_image"],
         playtime: data["playtime"],
+        genres: data["genres"],
         platforms: data["platforms"].map(element => {
             return element.platform;
         }),
-        genres: data["genres"],
-        developers: data["developers"],
-        stores: data["stores"]
+        
     }
     
 };

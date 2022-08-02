@@ -40,7 +40,7 @@ function VideogameCard (props) {
                         <ul>
                             {props.genres && props.genres.map(genre => {
                                 return (
-                                    <li><p key={genre.id}>{genre.name}</p></li>
+                                    <li key={genre.id}><p>{genre.name}</p></li>
                                 )
                             })}
                         </ul>
@@ -50,7 +50,7 @@ function VideogameCard (props) {
                         <ul>
                             {props.platforms && props.platforms.map(platform => {
                                 return (
-                                    <li><p key={platform.id}>{platform.name}</p></li>
+                                    <li key={platform.id}><p >{platform.name}</p></li>
                                 )
                             })}
                         </ul>

@@ -134,14 +134,14 @@ router.get("/:idVideogame", async (req, res, next) => {
 
     const optionsDb = {
         where: {id: idVideogame},
-        
+        include: [{model: Genre}, {model: Platforms}]
     };
     
     try {
         // Primero busca en la base de datos
         // Db data
         const dbData = await Videogame.findOne(optionsDb);
-
+        console.log(dbData);
         if (dbData) {
             res.status(200).send(dbData);
         } else {

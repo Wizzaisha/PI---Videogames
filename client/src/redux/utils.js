@@ -1,4 +1,4 @@
-export function filterData(data, genres, platforms, genreModel, platformModel, origin){
+export function filterData(data, genres, platforms, genreModel, platformModel, origin, sortType){
 
     let videogamesData = [];
     
@@ -9,7 +9,11 @@ export function filterData(data, genres, platforms, genreModel, platformModel, o
     } else {
         videogamesData = data;
     }
-    
+
+    if(sortType.length > 0){
+        sortItems(videogamesData, sortType);
+    }
+
     if (platforms.length === 0) {
         return videogamesData.filter(game => {
             return game[genreModel].filter(element => {
@@ -22,7 +26,7 @@ export function filterData(data, genres, platforms, genreModel, platformModel, o
                 return platforms.indexOf(element.name) > -1;
             }).length === platforms.length;
         });
-    } else {
+    } else if (genres.length > 0 && platforms.length > 0) {
         return videogamesData.filter(game => {
             const genresFiltered = game[genreModel].filter(element => {
                 return genres.indexOf(element.name) > -1;
@@ -34,43 +38,42 @@ export function filterData(data, genres, platforms, genreModel, platformModel, o
 
             return genresFiltered.length === genres.length && platformsFiltered.length === platforms.length;
         });
+    } else if (genres.length === 0 && platforms.length === 0) {
+        return videogamesData;
     }
 
 }
 
 
 export function sortItems(data, type) {
-    const dataToSort = data;
     switch(type) {
         case "A - Z":
-            sortAscending(dataToSort, "name");
+            sortAscending(data, "name");
             break;
         case "Z - A":
-            sortDescending(dataToSort, "name");
+            sortDescending(data, "name");
             break;
         case "ratingAsc":
-            sortAscending(dataToSort, "rating");
+            sortAscending(data, "rating");
             break;
         case "ratingDesc":
-            sortDescending(dataToSort, "rating");
+            sortDescending(data, "rating");
             break;
         case "releasedAsc":
-            sortAscending(dataToSort, "released");
+            sortAscending(data, "released");
             break;
         case "releasedDesc":
-            sortDescending(dataToSort, "released");
+            sortDescending(data, "released");
             break;
         case "playtimeAsc":
-            sortAscending(dataToSort, "playtime");
+            sortAscending(data, "playtime");
             break;
         case "playtimeDesc":
-            sortDescending(dataToSort, "playtime");
+            sortDescending(data, "playtime");
             break;
         default:
             return "Property not found";
     }
-
-    return dataToSort;
 }
 
 
